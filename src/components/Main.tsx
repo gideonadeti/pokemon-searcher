@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PokemonData, Type, StatElement } from "../types";
 
 export default function Main() {
   const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
 
+  useEffect(() => {
+    async function fetchRandomPokemonData() {
+      const randomId = Math.floor(Math.random() * 1000);
+
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${randomId}`
+        );
+        if (!response.ok) {
+          throw new Error("Pokemon not found");
+        }
+        const data = await response.json();
+        setPokemonData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchRandomPokemonData();
+  }, []);
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const input = event.currentTarget[0] as HTMLInputElement;
-    
+
     fetchPokemon(input.value);
-    
+
     input.value = "";
   }
 
