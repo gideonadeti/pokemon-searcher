@@ -4,10 +4,11 @@ import { PokemonData, Type, StatElement } from "../types";
 export default function Main() {
   const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchRandomPokemonData() {
-      const randomId = Math.floor(Math.random() * 1000);
+      const randomId = Math.floor(Math.random() * 1025) + 1;
 
       try {
         setLoading(true);
@@ -19,8 +20,10 @@ export default function Main() {
         }
         const data = await response.json();
         setPokemonData(data);
+        setError("");
       } catch (error) {
         console.error(error);
+        setError("Pokemon not found");
       } finally {
         setLoading(false);
       }
@@ -34,7 +37,9 @@ export default function Main() {
 
     const input = event.currentTarget[0] as HTMLInputElement;
 
-    fetchPokemon(input.value);
+    const nameOrId = input.value.toLowerCase();
+
+    fetchPokemon(nameOrId);
 
     input.value = "";
   }
@@ -46,12 +51,14 @@ export default function Main() {
         `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${nameOrId}`
       );
       if (!response.ok) {
-        throw new Error("Pokemon not found");
+        throw new Error("Pokémon not found or Something went wrong");
       }
       const data = await response.json();
       setPokemonData(data);
+      setError("");
     } catch (error) {
       console.error(error);
+      setError("Pokémon not found or Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -61,7 +68,12 @@ export default function Main() {
     <main className="flex-grow-1 container-fluid mt-5">
       <div className="container d-flex flex-column align-items-center">
         <Search handleSubmit={handleSubmit} />
-        {loading && <div className="spinner-border" role="status"></div>}
+        {loading && <div className="spinner-border mb-3" role="status"></div>}
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
         <div className="row w-100">
           {pokemonData && <Display pokemonData={pokemonData} />}
           {pokemonData && <TableStats pokemonData={pokemonData} />}
@@ -106,7 +118,11 @@ function Display({ pokemonData }: { pokemonData: PokemonData }) {
         </div>
       </div>
       <div>
-        <img src={pokemonData.sprites.front_default} alt={pokemonData.name} />
+        <img
+          src={pokemonData.sprites.front_default}
+          alt={pokemonData.name}
+          className="img-fluid"
+        />
       </div>
       <div>
         {pokemonData.types.map((type: Type) => (
