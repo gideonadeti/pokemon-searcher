@@ -3,12 +3,14 @@ import { PokemonData, Type, StatElement } from "../types";
 
 export default function Main() {
   const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchRandomPokemonData() {
       const randomId = Math.floor(Math.random() * 1000);
 
       try {
+        setLoading(true);
         const response = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${randomId}`
         );
@@ -19,6 +21,8 @@ export default function Main() {
         setPokemonData(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -37,6 +41,7 @@ export default function Main() {
 
   async function fetchPokemon(nameOrId: string) {
     try {
+      setLoading(true);
       const response = await fetch(
         `https://pokeapi.co/api/v2/pokemon/${nameOrId}`
       );
@@ -47,6 +52,8 @@ export default function Main() {
       setPokemonData(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -54,7 +61,7 @@ export default function Main() {
     <main className="flex-grow-1 container-fluid mt-5">
       <div className="container d-flex flex-column align-items-center">
         <Search handleSubmit={handleSubmit} />
-
+        {loading && <div className="spinner-border" role="status"></div>}
         <div className="row w-100">
           {pokemonData && <Display pokemonData={pokemonData} />}
           {pokemonData && <TableStats pokemonData={pokemonData} />}
