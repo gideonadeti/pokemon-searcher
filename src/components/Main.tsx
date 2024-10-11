@@ -20,6 +20,7 @@ export default function Main() {
 
         <div className="row">
           <Display />
+          <TableStats />
         </div>
       </div>
     </main>
@@ -58,6 +59,49 @@ function Display() {
         <span>grass</span>
         <span>poison</span>
       </div>
+    </div>
+  );
+}
+
+function TableStats() {
+  return (
+    <div className="col">
+      <table className="table table-bordered text-center">
+        <tr>
+          <th>Base</th>
+          <th>Stats</th>
+        </tr>
+
+        <tr>
+          <td>HP</td>
+          <td>45</td>
+        </tr>
+
+        <tr>
+          <td>Attack</td>
+          <td>49</td>
+        </tr>
+
+        <tr>
+          <td>Defense</td>
+          <td>49</td>
+        </tr>
+
+        <tr>
+          <td>Sp. Attack</td>
+          <td>65</td>
+        </tr>
+
+        <tr>
+          <td>Sp. Defense</td>
+          <td>65</td>
+        </tr>
+
+        <tr>
+          <td>Speed</td>
+          <td>45</td>
+        </tr>
+      </table>
     </div>
   );
 }
