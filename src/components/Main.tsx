@@ -1,16 +1,32 @@
 import { useState } from "react";
+import { PokemonData, Type, StatElement } from "../types";
 
 export default function Main() {
-  const [searchedString, setSearchedString] = useState("");
+  const [pokemonData, setPokemonData] = useState<PokemonData | null>(null);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const input = event.currentTarget[0] as HTMLInputElement;
-
-    setSearchedString(input.value);
-
+    
+    fetchPokemon(input.value);
+    
     input.value = "";
+  }
+
+  async function fetchPokemon(nameOrId: string) {
+    try {
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${nameOrId}`
+      );
+      if (!response.ok) {
+        throw new Error("Pokemon not found");
+      }
+      const data = await response.json();
+      setPokemonData(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -18,9 +34,9 @@ export default function Main() {
       <div className="container d-flex flex-column align-items-center">
         <Search handleSubmit={handleSubmit} />
 
-        <div className="row">
-          <Display />
-          <TableStats />
+        <div className="row w-100">
+          {pokemonData && <Display pokemonData={pokemonData} />}
+          {pokemonData && <TableStats pokemonData={pokemonData} />}
         </div>
       </div>
     </main>
@@ -45,62 +61,47 @@ export function Search({
   );
 }
 
-function Display() {
+function Display({ pokemonData }: { pokemonData: PokemonData }) {
   return (
     <div className="col bg-light d-flex flex-column p-3 rounded border shadow-sm">
       <div>
-        <div>BULBASAUR #1</div>
-        <div>Weight: 69 Height: 7</div>
+        <div>
+          {pokemonData.name} #{pokemonData.id}
+        </div>
+        <div>
+          Weight: {pokemonData.weight} Height: {pokemonData.height}
+        </div>
       </div>
       <div>
-        <img src="/vite.svg" alt="" />
+        <img src={pokemonData.sprites.front_default} alt={pokemonData.name} />
       </div>
       <div>
-        <span>grass</span>
-        <span>poison</span>
+        {pokemonData.types.map((type: Type) => (
+          <span key={type.type.name}>{type.type.name} </span>
+        ))}
       </div>
     </div>
   );
 }
 
-function TableStats() {
+function TableStats({ pokemonData }: { pokemonData: PokemonData }) {
   return (
     <div className="col">
       <table className="table table-bordered text-center">
-        <tr>
-          <th>Base</th>
-          <th>Stats</th>
-        </tr>
-
-        <tr>
-          <td>HP</td>
-          <td>45</td>
-        </tr>
-
-        <tr>
-          <td>Attack</td>
-          <td>49</td>
-        </tr>
-
-        <tr>
-          <td>Defense</td>
-          <td>49</td>
-        </tr>
-
-        <tr>
-          <td>Sp. Attack</td>
-          <td>65</td>
-        </tr>
-
-        <tr>
-          <td>Sp. Defense</td>
-          <td>65</td>
-        </tr>
-
-        <tr>
-          <td>Speed</td>
-          <td>45</td>
-        </tr>
+        <thead>
+          <tr>
+            <th>Base</th>
+            <th>Stats</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pokemonData.stats.map((stat: StatElement) => (
+            <tr key={stat.stat.name}>
+              <td>{stat.stat.name}</td>
+              <td>{stat.base_stat}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
