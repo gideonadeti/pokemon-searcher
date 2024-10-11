@@ -12,7 +12,7 @@ export default function Main() {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${randomId}`
+          `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${randomId}`
         );
         if (!response.ok) {
           throw new Error("Pokemon not found");
@@ -43,7 +43,7 @@ export default function Main() {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${nameOrId}`
+        `https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${nameOrId}`
       );
       if (!response.ok) {
         throw new Error("Pokemon not found");
