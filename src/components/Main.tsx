@@ -77,7 +77,11 @@ export function Search({
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
 }) {
   return (
-    <form className="w-50" onSubmit={handleSubmit}>
+    <form
+      className="w-100"
+      onSubmit={handleSubmit}
+      style={{ maxWidth: "480px" }}
+    >
       <div className="form-floating mb-3">
         <input className="form-control" id="search-input" placeholder="1" />
         <label htmlFor="search-input">Enter Pokémon name or ID</label>
