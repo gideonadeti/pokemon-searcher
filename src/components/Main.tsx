@@ -91,13 +91,14 @@ export function Search({
 
 function Display({ pokemonData }: { pokemonData: PokemonData }) {
   return (
-    <div className="col bg-light d-flex flex-column p-3 rounded border shadow-sm">
+    <div className="col bg-light d-flex flex-column p-3 rounded border shadow-sm h-100">
       <div>
-        <div>
-          {pokemonData.name} #{pokemonData.id}
+        <div className="fw-bold display-6">
+          {pokemonData.name[0].toUpperCase()}
+          {pokemonData.name.slice(1)} #{pokemonData.id}
         </div>
-        <div>
-          Weight: {pokemonData.weight} Height: {pokemonData.height}
+        <div className="text-muted">
+          Weight: {pokemonData.weight}, Height: {pokemonData.height}
         </div>
       </div>
       <div>
@@ -105,7 +106,9 @@ function Display({ pokemonData }: { pokemonData: PokemonData }) {
       </div>
       <div>
         {pokemonData.types.map((type: Type) => (
-          <span key={type.type.name}>{type.type.name} </span>
+          <span key={type.type.name} className={`badge me-2 ${type.type.name}`}>
+            {type.type.name}{" "}
+          </span>
         ))}
       </div>
     </div>
@@ -114,7 +117,7 @@ function Display({ pokemonData }: { pokemonData: PokemonData }) {
 
 function TableStats({ pokemonData }: { pokemonData: PokemonData }) {
   return (
-    <div className="col">
+    <div className="col h-100">
       <table className="table table-bordered text-center">
         <thead>
           <tr>
