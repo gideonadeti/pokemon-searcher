@@ -18,7 +18,9 @@ export default function Main() {
       <div className="container d-flex flex-column align-items-center">
         <Search handleSubmit={handleSubmit} />
 
-        <div>{searchedString}</div>
+        <div className="row">
+          <Display />
+        </div>
       </div>
     </main>
   );
@@ -39,5 +41,23 @@ export function Search({
         </button>
       </div>
     </form>
+  );
+}
+
+function Display() {
+  return (
+    <div className="col bg-light d-flex flex-column p-3 rounded border shadow-sm">
+      <div>
+        <div>BULBASAUR #1</div>
+        <div>Weight: 69 Height: 7</div>
+      </div>
+      <div>
+        <img src="/vite.svg" alt="" />
+      </div>
+      <div>
+        <span>grass</span>
+        <span>poison</span>
+      </div>
+    </div>
   );
 }
